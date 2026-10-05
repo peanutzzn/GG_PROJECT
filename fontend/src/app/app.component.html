@@ -8,3 +8,327 @@
   Test MySQL
 </button> 
 </div>
+
+<div class="container mt-4">
+
+  <!-- ================================= -->
+  <!-- Form -->
+  <!-- ================================= -->
+
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h4 class="mb-0">
+        {{ editingId === null ? 'เพิ่มข้อมูล' : 'แก้ไขข้อมูล' }}
+      </h4>
+    </div>
+
+    <div class="card-body">
+
+      <form
+        [formGroup]="personForm"
+        (ngSubmit)="submit()"
+      >
+
+        <div class="row">
+
+          <!-- ชื่อ -->
+
+          <div class="col-md-6 mb-3">
+
+            <label class="form-label">
+              ชื่อ
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              formControlName="firstName"
+              placeholder="กรอกชื่อ"
+            >
+
+            <div
+              class="text-danger mt-1"
+              *ngIf="
+                personForm.get('firstName')?.invalid &&
+                personForm.get('firstName')?.touched
+              "
+            >
+              กรุณากรอกชื่อ
+            </div>
+
+          </div>
+
+
+          <!-- สกุล -->
+
+          <div class="col-md-6 mb-3">
+
+            <label class="form-label">
+              สกุล
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              formControlName="lastName"
+              placeholder="กรอกนามสกุล"
+            >
+
+            <div
+              class="text-danger mt-1"
+              *ngIf="
+                personForm.get('lastName')?.invalid &&
+                personForm.get('lastName')?.touched
+              "
+            >
+              กรุณากรอกสกุล
+            </div>
+
+          </div>
+
+
+          <!-- วันเกิด -->
+
+          <div class="col-md-6 mb-3">
+
+            <label class="form-label">
+              วันเกิด
+            </label>
+
+            <input
+              type="date"
+              class="form-control"
+              formControlName="birthDate"
+              [max]="maxBirthDate"
+            >
+
+            <div
+              class="text-danger mt-1"
+              *ngIf="
+                personForm.get('birthDate')?.invalid &&
+                personForm.get('birthDate')?.touched
+              "
+            >
+              กรุณาเลือกวันเกิด
+            </div>
+
+          </div>
+
+
+          <!-- เพศ -->
+
+          <div class="col-md-6 mb-3">
+
+            <label class="form-label">
+              เพศ
+            </label>
+
+            <select
+              class="form-select"
+              formControlName="gender"
+            >
+
+              <option value="">
+                -- เลือกเพศ --
+              </option>
+
+              <option value="M">
+                ชาย
+              </option>
+
+              <option value="F">
+                หญิง
+              </option>
+
+              <option value="O">
+                อื่น ๆ
+              </option>
+
+            </select>
+
+            <div
+              class="text-danger mt-1"
+              *ngIf="
+                personForm.get('gender')?.invalid &&
+                personForm.get('gender')?.touched
+              "
+            >
+              กรุณาเลือกเพศ
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Buttons -->
+
+        <button
+          type="submit"
+          class="btn btn-primary me-2"
+        >
+          {{ editingId === null ? 'เพิ่มข้อมูล' : 'บันทึกการแก้ไข' }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="resetForm()"
+        >
+          ยกเลิก
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================= -->
+  <!-- Table -->
+  <!-- ================================= -->
+
+  <div class="card">
+
+    <div class="card-header">
+
+      <h4 class="mb-0">
+        รายการข้อมูล
+      </h4>
+
+    </div>
+
+
+    <div class="card-body">
+
+      <div
+        *ngIf="loading"
+        class="text-center"
+      >
+        กำลังโหลดข้อมูล...
+      </div>
+
+
+      <div
+        class="table-responsive"
+        *ngIf="!loading"
+      >
+
+        <table class="table table-bordered table-hover">
+
+          <thead class="table-light">
+
+            <tr>
+
+              <th width="70">
+                #
+              </th>
+
+              <th>
+                ชื่อ
+              </th>
+
+              <th>
+                สกุล
+              </th>
+
+              <th>
+                วันเกิด
+              </th>
+
+              <th>
+                เพศ
+              </th>
+
+              <th width="180">
+                จัดการ
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr *ngFor="let person of persons">
+
+              <td>
+                {{ person.id }}
+              </td>
+
+              <td>
+                {{ person.first_name }}
+              </td>
+
+              <td>
+                {{ person.last_name }}
+              </td>
+
+              <td>
+                {{ person.birth_date | date:'dd/MM/yyyy' }}
+              </td>
+
+              <td>
+
+                <span *ngIf="person.gender === 'M'">
+                  ชาย
+                </span>
+
+                <span *ngIf="person.gender === 'F'">
+                  หญิง
+                </span>
+
+                <span *ngIf="person.gender === 'O'">
+                  อื่น ๆ
+                </span>
+
+              </td>
+
+              <td>
+
+                <button
+                  type="button"
+                  class="btn btn-warning btn-sm me-2"
+                  (click)="editPerson(person)"
+                >
+                  แก้ไข
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm"
+                  (click)="deletePerson(person.id)"
+                >
+                  ลบ
+                </button>
+
+              </td>
+
+            </tr>
+
+
+            <tr *ngIf="persons.length === 0">
+
+              <td
+                colspan="6"
+                class="text-center"
+              >
+                ไม่พบข้อมูล
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
