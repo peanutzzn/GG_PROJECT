@@ -53,3 +53,7 @@ git remote -v
 git commit -m "...
 git add .
 git status
+
+ลบ entry fontend ออกจาก Git index -> git rm --cached fontend = rm 'fontend'
+ตรวจสอบว่า fontend/.git ยังมีอยู่ไหม -> ls -la fontend = ถ้าเจอ .git -> rm -rf fontend/.git
+git add fontend
